@@ -4,7 +4,7 @@ const db = require('../src/models');
 
 describe('/posts endpoints', () => {
   beforeAll(async () => {
-    await db.sequelize.sync({ force: true });
+    return db.sequelize.sync({ force: true });
   });
 
   it('POST - it shloud create a post', async () => {
@@ -13,7 +13,11 @@ describe('/posts endpoints', () => {
       .send({ content: 'First post' });
 
     expect(res.statusCode).toEqual(201);
-    expect(res.body).toHaveProperty(['id', 'content']);
-    expect(true).toBe(false);
+    expect(res.body).toHaveProperty('id');
+    expect(res.body).toHaveProperty('content', 'First post');
+  });
+
+  afterAll(() => {
+    return db.sequelize.close();
   });
 });
